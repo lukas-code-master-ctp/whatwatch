@@ -56,7 +56,7 @@ async function getMovieRuntime(id: number): Promise<number | null> {
 
 export async function enrichMovies(aiMovies: AIMovie[]): Promise<Movie[]> {
   const settled = await Promise.allSettled(
-    aiMovies.map(async (ai) => {
+    aiMovies.map(async (ai): Promise<Movie> => {
       const results = await searchMovies(ai.title)
       const tmdb = results.find(r => r.title.toLowerCase() === ai.title.toLowerCase())
         ?? results[0]
