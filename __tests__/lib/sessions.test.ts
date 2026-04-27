@@ -3,6 +3,7 @@ import {
   getSession,
   addUserPrefs,
   setResults,
+  clearStore,
 } from "@/lib/sessions"
 import { UserPrefs, Movie } from "@/lib/types"
 
@@ -24,6 +25,10 @@ const sampleMovie: Movie = {
   duration: 169,
   overview: "A team of explorers...",
 }
+
+beforeEach(() => {
+  clearStore()
+})
 
 describe("sessions", () => {
   test("createSession returns session with correct mode and id", () => {
