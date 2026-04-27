@@ -31,23 +31,31 @@ export function genreName(ids: number[]): string | null {
 }
 
 export async function searchMovies(query: string): Promise<TMDBSearchResult[]> {
-  const params = new URLSearchParams({ api_key: process.env.TMDB_API_KEY!, query })
-  const res = await fetch(`${BASE}/search/movie?${params}`)
-  if (!res.ok) return []
-  const data = await res.json()
-  return data.results ?? []
+  try {
+    const params = new URLSearchParams({ api_key: process.env.TMDB_API_KEY!, query })
+    const res = await fetch(`${BASE}/search/movie?${params}`)
+    if (!res.ok) return []
+    const data = await res.json()
+    return Array.isArray(data.results) ? data.results : []
+  } catch {
+    return []
+  }
 }
 
 async function getMovieRuntime(id: number): Promise<number | null> {
-  const params = new URLSearchParams({ api_key: process.env.TMDB_API_KEY! })
-  const res = await fetch(`${BASE}/movie/${id}?${params}`)
-  if (!res.ok) return null
-  const data = await res.json()
-  return data.runtime ?? null
+  try {
+    const params = new URLSearchParams({ api_key: process.env.TMDB_API_KEY! })
+    const res = await fetch(`${BASE}/movie/${id}?${params}`)
+    if (!res.ok) return null
+    const data = await res.json()
+    return typeof data.runtime === 'number' ? data.runtime : null
+  } catch {
+    return null
+  }
 }
 
 export async function enrichMovies(aiMovies: AIMovie[]): Promise<Movie[]> {
-  return Promise.all(
+  const settled = await Promise.allSettled(
     aiMovies.map(async (ai) => {
       const results = await searchMovies(ai.title)
       const tmdb = results.find(r => r.title.toLowerCase() === ai.title.toLowerCase())
@@ -66,4 +74,8 @@ export async function enrichMovies(aiMovies: AIMovie[]): Promise<Movie[]> {
       }
     })
   )
+
+  return settled
+    .filter((r): r is PromiseFulfilledResult<Movie> => r.status === "fulfilled")
+    .map(r => r.value)
 }
