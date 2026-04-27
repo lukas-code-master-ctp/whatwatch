@@ -2,10 +2,12 @@ import { getRecommendations } from "@/lib/openrouter"
 
 beforeEach(() => {
   global.fetch = jest.fn()
+  process.env.OPENROUTER_API_KEY = "test-key"
 })
 
 afterEach(() => {
   jest.resetAllMocks()
+  delete process.env.OPENROUTER_API_KEY
 })
 
 const validResponse = [
@@ -42,5 +44,19 @@ describe("getRecommendations", () => {
   test("throws when API returns non-ok status", async () => {
     ;(fetch as jest.Mock).mockResolvedValueOnce({ ok: false, status: 429 })
     await expect(getRecommendations("test")).rejects.toThrow("OpenRouter error: 429")
+  })
+
+  test("parses JSON array wrapped in markdown code fence", async () => {
+    const fencedContent = "Here are the results:\n```json\n" + JSON.stringify(validResponse) + "\n```"
+    ;(fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        choices: [{ message: { content: fencedContent } }],
+      }),
+    })
+
+    const results = await getRecommendations("test prompt")
+    expect(results).toHaveLength(1)
+    expect(results[0].title).toBe("Shrek")
   })
 })
