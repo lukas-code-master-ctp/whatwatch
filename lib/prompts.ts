@@ -8,9 +8,13 @@ function filtersClause(filters: Filters): string {
 }
 
 const JSON_INSTRUCTION = `Responde ÚNICAMENTE con un array JSON válido con este formato exacto, sin texto adicional:
-[{"title":"","year":0,"platform":"","matchScore":0,"reason":""}]
+[{"title":"","year":0,"platform":"","matchScore":0,"reason":""}]`
 
-Ejemplo de estructura: ["title", "year", "platform", "matchScore", "reason"] son los campos requeridos.`
+function coupleFiltersClause(f1: Filters, f2: Filters): string {
+  const active = f1.yearFrom !== null ? f1 : f2.yearFrom !== null ? f2 : null
+  if (!active || active.yearFrom === null || active.yearTo === null) return ""
+  return `Solo películas estrenadas entre ${active.yearFrom} y ${active.yearTo}.\n\n`
+}
 
 export function buildCouplePrompt(
   prefs1: UserPrefs,
@@ -18,7 +22,7 @@ export function buildCouplePrompt(
   exclude: string[] = []
 ): string {
   const platforms = [...new Set([...prefs1.platforms, ...prefs2.platforms])].join(", ")
-  const filtersText = filtersClause(prefs2.filters.yearFrom !== null ? prefs2.filters : prefs1.filters)
+  const filtersText = coupleFiltersClause(prefs1.filters, prefs2.filters)
   const excludeClause = exclude.length > 0
     ? `\nNO incluyas estas películas que ya se mostraron: ${exclude.join(", ")}.\n`
     : ""

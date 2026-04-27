@@ -45,7 +45,7 @@ describe("buildCouplePrompt", () => {
 
   test("returns valid JSON array instruction", () => {
     const prompt = buildCouplePrompt(prefs1, prefs2)
-    expect(prompt).toContain('["title"')
+    expect(prompt).toContain('"title"')
   })
 })
 
