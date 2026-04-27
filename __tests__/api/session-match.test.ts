@@ -93,7 +93,7 @@ describe("GET /api/session/[id]/match", () => {
     const data = await res.json()
     expect(data.status).toBe("ready")
     expect(openrouter.getRecommendations).toHaveBeenCalledWith("couple prompt")
-    expect(sessions.setResults).toHaveBeenCalled()
+    expect(sessions.setResults).toHaveBeenCalledWith("abc", [movie])
   })
 
   test("does not cache results when exclude list is provided", async () => {
@@ -105,5 +105,15 @@ describe("GET /api/session/[id]/match", () => {
     const data = await res.json()
     expect(data.status).toBe("ready")
     expect(sessions.setResults).not.toHaveBeenCalled()
+  })
+
+  test("returns 502 when AI service throws", async () => {
+    jest.mocked(sessions.getSession).mockReturnValue(
+      makeSession({ mode: "solo", users: [prefs] })
+    )
+    jest.mocked(openrouter.getRecommendations).mockRejectedValue(new Error("quota exceeded"))
+    const req = new NextRequest("http://localhost/api/session/abc/match")
+    const res = await GET(req, { params: { id: "abc" } })
+    expect(res.status).toBe(502)
   })
 })

@@ -30,21 +30,24 @@ export async function GET(
     return NextResponse.json(base)
   }
 
-  const exclude = req.nextUrl.searchParams.get("exclude")
+  const exclude = (req.nextUrl.searchParams.get("exclude")
     ?.split(",")
-    .filter(Boolean) ?? []
+    .filter(Boolean) ?? []).slice(0, 20)
 
   const prompt =
     session.mode === "couple"
       ? buildCouplePrompt(session.users[0], session.users[1], exclude)
       : buildSoloPrompt(session.users[0], exclude)
 
-  const aiMovies = await getRecommendations(prompt)
-  const movies = await enrichMovies(aiMovies)
-
-  if (exclude.length === 0) {
-    setResults(params.id, movies)
+  try {
+    const aiMovies = await getRecommendations(prompt)
+    const movies = await enrichMovies(aiMovies)
+    // "show more" requests skip caching so the main results aren't overwritten
+    if (exclude.length === 0) {
+      setResults(params.id, movies)
+    }
+    return NextResponse.json({ ...base, status: "ready", results: movies })
+  } catch {
+    return NextResponse.json({ error: "AI service unavailable" }, { status: 502 })
   }
-
-  return NextResponse.json({ ...base, status: "ready", results: movies })
 }
