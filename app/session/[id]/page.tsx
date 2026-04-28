@@ -14,6 +14,7 @@ export default function SessionPage() {
   const [screen, setScreen] = useState<Screen>("prefs")
   const [submitting, setSubmitting] = useState(false)
   const [movies, setMovies] = useState<Movie[]>([])
+  const [userSeeds, setUserSeeds] = useState<string[][]>([])
   const [sessionMode, setSessionMode] = useState<"couple" | "solo">("solo")
   const [sessionUrl, setSessionUrl] = useState("")
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -31,6 +32,7 @@ export default function SessionPage() {
       if (data.status === "ready" && data.results) {
         clearInterval(pollRef.current!)
         setMovies(data.results)
+        if (data.userSeeds) setUserSeeds(data.userSeeds)
         setScreen("results")
       }
     }, 3000)
@@ -67,5 +69,5 @@ export default function SessionPage() {
     return <WaitingScreen sessionUrl={sessionUrl} mode={sessionMode} />
   }
 
-  return <ResultsScreen initialMovies={movies} sessionId={id} />
+  return <ResultsScreen initialMovies={movies} sessionId={id} userSeeds={userSeeds} mode={sessionMode} />
 }

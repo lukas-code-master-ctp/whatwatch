@@ -8,9 +8,11 @@ import MovieCard from "@/components/ui/MovieCard"
 interface Props {
   initialMovies: Movie[]
   sessionId: string
+  userSeeds: string[][]
+  mode: "couple" | "solo"
 }
 
-export default function ResultsScreen({ initialMovies, sessionId }: Props) {
+export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mode }: Props) {
   const [movies, setMovies] = useState<Movie[]>(initialMovies)
   const [shown, setShown] = useState<string[]>(initialMovies.map((m) => m.title))
   const [loading, setLoading] = useState(false)
@@ -38,7 +40,7 @@ export default function ResultsScreen({ initialMovies, sessionId }: Props) {
 
       <div className="max-w-2xl mx-auto px-4 py-10 relative z-10">
         {/* Header */}
-        <div className="mb-7 space-y-1">
+        <div className="mb-7 space-y-2">
           <div className="flex items-center gap-2 text-[#E11D48] text-xs font-mono tracking-widest uppercase">
             <Sparkles className="w-3.5 h-3.5" />
             Selección IA
@@ -46,7 +48,34 @@ export default function ResultsScreen({ initialMovies, sessionId }: Props) {
           <h1 className="text-2xl font-bold text-[#F8FAFC]">
             {movies.length} películas para esta noche
           </h1>
-          <p className="text-[#475569] text-sm">Personalizadas según tus preferencias y plataformas</p>
+
+          {/* Seeds attribution */}
+          {userSeeds.length > 0 && (
+            <div className="space-y-1 pt-1">
+              {mode === "solo" && userSeeds[0]?.length > 0 && (
+                <p className="text-sm text-[#64748B]">
+                  Basado en:{" "}
+                  <span className="text-[#94A3B8]">{userSeeds[0].join(", ")}</span>
+                </p>
+              )}
+              {mode === "couple" && (
+                <div className="space-y-0.5">
+                  {userSeeds[0]?.length > 0 && (
+                    <p className="text-sm text-[#64748B]">
+                      <span className="text-[#E11D48] font-medium">Tú:</span>{" "}
+                      <span className="text-[#94A3B8]">{userSeeds[0].join(", ")}</span>
+                    </p>
+                  )}
+                  {userSeeds[1]?.length > 0 && (
+                    <p className="text-sm text-[#64748B]">
+                      <span className="text-[#E11D48] font-medium">Tu pareja:</span>{" "}
+                      <span className="text-[#94A3B8]">{userSeeds[1].join(", ")}</span>
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Grid */}

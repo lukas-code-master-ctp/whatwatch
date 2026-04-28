@@ -46,4 +46,5 @@ export interface MatchResponse {
   submitted: number
   required: number
   results?: Movie[]
+  userSeeds?: string[][]   // seeds per user, in submission order
 }

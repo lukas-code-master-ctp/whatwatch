@@ -16,11 +16,13 @@ export async function GET(
   }
 
   const required = session.mode === "couple" ? 2 : 1
+  const userSeeds = session.users.map((u) => u.seeds)
   const base: Omit<MatchResponse, "results"> = {
     status: "waiting",
     mode: session.mode,
     submitted: session.users.length,
     required,
+    userSeeds,
   }
 
   if (session.results) {
@@ -47,7 +49,7 @@ export async function GET(
     if (exclude.length === 0) {
       setResults(id, movies)
     }
-    return NextResponse.json({ ...base, status: "ready", results: movies })
+    return NextResponse.json({ ...base, status: "ready", results: movies, userSeeds })
   } catch {
     return NextResponse.json({ error: "AI service unavailable" }, { status: 502 })
   }
