@@ -18,7 +18,9 @@ function promptClause(prompt: string | undefined): string {
   return `Además, el usuario pide específicamente: "${prompt.trim()}"\nTen esto en cuenta como criterio de refinamiento.\n\n`
 }
 
-const JSON_INSTRUCTION = `Responde ÚNICAMENTE con un array JSON válido con este formato exacto, sin texto adicional:
+const JSON_INSTRUCTION = `IMPORTANTE: Recomienda SOLO largometrajes (películas). NO incluyas series de TV, mini-series, documentales de TV ni programas de televisión de ningún tipo. Solo películas estrenadas en cines o como largometrajes.
+
+Responde ÚNICAMENTE con un array JSON válido con este formato exacto, sin texto adicional:
 [{"title":"","year":0,"platform":"","matchScore":0,"reason":""}]`
 
 export function buildCouplePrompt(
