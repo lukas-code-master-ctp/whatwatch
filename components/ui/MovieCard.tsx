@@ -5,16 +5,18 @@ interface Props {
   movie: Movie
 }
 
-const PLATFORM_COLORS: Record<string, string> = {
-  netflix: "text-red-400",
-  disney: "text-blue-400",
-  prime: "text-sky-400",
-  hbo: "text-purple-400",
-  apple: "text-white/70",
+function platformColor(platform: string): string {
+  const p = platform.toLowerCase()
+  if (p.includes("netflix")) return "text-red-400"
+  if (p.includes("disney")) return "text-blue-400"
+  if (p.includes("prime") || p.includes("amazon")) return "text-sky-400"
+  if (p.includes("hbo") || p.includes("max")) return "text-purple-400"
+  if (p.includes("apple")) return "text-white/70"
+  return "text-[#94A3B8]"
 }
 
 export default function MovieCard({ movie }: Props) {
-  const platformColor = PLATFORM_COLORS[movie.platform] ?? "text-[#94A3B8]"
+  const color = platformColor(movie.platform ?? "")
 
   return (
     <div className="group bg-[#0A0A1A] border border-white/6 rounded-xl overflow-hidden flex flex-col hover:border-[#E11D48]/30 transition-all duration-300 hover:shadow-[0_0_20px_rgba(225,29,72,0.1)]">
@@ -58,7 +60,7 @@ export default function MovieCard({ movie }: Props) {
           </div>
         )}
 
-        <div className={`text-xs font-medium ${platformColor}`}>{movie.platform}</div>
+        <div className={`text-xs font-medium ${color}`}>{movie.platform}</div>
 
         {movie.reason && (
           <p className="text-xs text-[#475569] mt-auto pt-1.5 leading-relaxed line-clamp-3 border-t border-white/4">
