@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import { useParams } from "next/navigation"
+import { Suspense, useState, useEffect, useRef } from "react"
+import { useParams, useSearchParams } from "next/navigation"
 import PreferencesForm from "@/components/session/PreferencesForm"
 import WaitingScreen from "@/components/session/WaitingScreen"
 import ResultsScreen from "@/components/session/ResultsScreen"
@@ -9,8 +9,10 @@ import { UserPrefs, Movie, MatchResponse } from "@/lib/types"
 
 type Screen = "prefs" | "waiting" | "results"
 
-export default function SessionPage() {
+function SessionContent() {
   const { id } = useParams<{ id: string }>()
+  const searchParams = useSearchParams()
+  const urlMode = (searchParams.get("mode") ?? "solo") as "couple" | "solo"
   const [screen, setScreen] = useState<Screen>("prefs")
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState("")
@@ -32,7 +34,6 @@ export default function SessionPage() {
     }
   }
 
-  // Couple mode: poll until partner submits, then show results
   function startCouplePolling() {
     stopPolling()
     let failStreak = 0
@@ -40,8 +41,7 @@ export default function SessionPage() {
       try {
         const res = await fetch(`/api/session/${id}/match`)
         if (!res.ok) {
-          failStreak++
-          if (failStreak >= 5) {
+          if (++failStreak >= 5) {
             stopPolling()
             setMatchError("No pudimos obtener las recomendaciones. Intenta recargar la página.")
           }
@@ -57,8 +57,7 @@ export default function SessionPage() {
           setScreen("results")
         }
       } catch {
-        failStreak++
-        if (failStreak >= 5) {
+        if (++failStreak >= 5) {
           stopPolling()
           setMatchError("Error de conexión. Intenta recargar la página.")
         }
@@ -72,14 +71,13 @@ export default function SessionPage() {
     setSubmitting(true)
     setSubmitError("")
 
-    // 1. Save prefs
     let submitted: number
     let required: number
     try {
       const res = await fetch(`/api/session/${id}/prefs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(prefs),
+        body: JSON.stringify({ prefs, mode: urlMode }),
       })
       if (!res.ok) {
         setSubmitting(false)
@@ -99,7 +97,7 @@ export default function SessionPage() {
     setScreen("waiting")
 
     if (submitted >= required) {
-      // All prefs in (solo, or last of couple) — call match directly, no polling race
+      // Solo (or last couple pref) — one direct call, no polling race
       try {
         const res = await fetch(`/api/session/${id}/match`)
         if (res.ok) {
@@ -112,42 +110,26 @@ export default function SessionPage() {
             return
           }
         }
-      } catch { /* fall through to polling as safety net */ }
-
-      // Safety-net: if direct call failed, fall back to polling
+      } catch { /* fall back to polling */ }
       startCouplePolling()
     } else {
-      // Couple mode, waiting for partner
       startCouplePolling()
     }
   }
 
   if (screen === "prefs") {
-    return (
-      <PreferencesForm
-        onSubmit={handlePrefsSubmit}
-        submitting={submitting}
-        error={submitError}
-      />
-    )
+    return <PreferencesForm onSubmit={handlePrefsSubmit} submitting={submitting} error={submitError} />
   }
-
   if (screen === "waiting") {
-    return (
-      <WaitingScreen
-        sessionUrl={sessionUrl}
-        mode={sessionMode}
-        error={matchError}
-      />
-    )
+    return <WaitingScreen sessionUrl={sessionUrl} mode={sessionMode} error={matchError} />
   }
+  return <ResultsScreen initialMovies={movies} sessionId={id} userSeeds={userSeeds} mode={sessionMode} />
+}
 
+export default function SessionPage() {
   return (
-    <ResultsScreen
-      initialMovies={movies}
-      sessionId={id}
-      userSeeds={userSeeds}
-      mode={sessionMode}
-    />
+    <Suspense>
+      <SessionContent />
+    </Suspense>
   )
 }

@@ -16,7 +16,7 @@ export default function HomePage() {
       body: JSON.stringify({ mode }),
     })
     const { id } = await res.json()
-    router.push(`/session/${id}`)
+    router.push(`/session/${id}?mode=${mode}`)
   }
 
   function handleLink(url: string) {

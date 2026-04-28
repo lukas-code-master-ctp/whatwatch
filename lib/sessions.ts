@@ -65,6 +65,12 @@ export function setResults(id: string, results: Movie[]): void {
   store.set(id, { ...session, results })
 }
 
+export function ensureSession(id: string, mode: SessionMode): void {
+  if (store.has(id)) return
+  const now = Date.now()
+  store.set(id, { id, mode, createdAt: now, expiresAt: now + TTL, users: [], results: null })
+}
+
 export function clearStore(): void {
   store.clear()
 }
