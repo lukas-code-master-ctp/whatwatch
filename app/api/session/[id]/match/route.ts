@@ -7,9 +7,10 @@ import { MatchResponse } from "@/lib/types"
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = getSession(params.id)
+  const { id } = await params
+  const session = getSession(id)
   if (!session) {
     return NextResponse.json({ error: "Session not found" }, { status: 404 })
   }
@@ -44,7 +45,7 @@ export async function GET(
     const movies = await enrichMovies(aiMovies)
     // "show more" requests skip caching so the main results aren't overwritten
     if (exclude.length === 0) {
-      setResults(params.id, movies)
+      setResults(id, movies)
     }
     return NextResponse.json({ ...base, status: "ready", results: movies })
   } catch {

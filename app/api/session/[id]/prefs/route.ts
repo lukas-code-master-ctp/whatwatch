@@ -4,10 +4,11 @@ import { UserPrefs } from "@/lib/types"
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   const prefs = (await req.json()) as UserPrefs
-  const session = addUserPrefs(params.id, prefs)
+  const session = addUserPrefs(id, prefs)
   if (!session) {
     return NextResponse.json({ error: "Session not found" }, { status: 404 })
   }

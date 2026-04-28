@@ -11,7 +11,7 @@ export async function getRecommendations(prompt: string): Promise<AIMovie[]> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "google/gemini-flash-1.5",
+      model: "google/gemini-2.0-flash-lite-001",
       messages: [{ role: "user", content: prompt }],
     }),
   })

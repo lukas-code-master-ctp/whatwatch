@@ -1,7 +1,12 @@
 import { randomUUID } from "crypto"
 import { Session, SessionMode, UserPrefs, Movie } from "./types"
 
-const store = new Map<string, Session>()
+declare global {
+  // eslint-disable-next-line no-var
+  var __sessionStore: Map<string, Session> | undefined
+}
+
+const store: Map<string, Session> = global.__sessionStore ?? (global.__sessionStore = new Map())
 const TTL = 24 * 60 * 60 * 1000
 
 function cleanup(): void {
