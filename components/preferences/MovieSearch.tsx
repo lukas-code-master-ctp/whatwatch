@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { Search, X, Loader2 } from "lucide-react"
 
 interface SearchResult {
   id: number
@@ -50,37 +51,46 @@ export default function MovieSearch({ selected, onChange, maxSeeds = 5 }: Props)
 
   return (
     <div className="space-y-3">
-      <label className="text-sm text-zinc-400">
-        ¿Qué tipo de película te provoca ver hoy? <span className="text-zinc-500">(elige 1–{maxSeeds})</span>
-      </label>
+      <div className="flex items-baseline justify-between">
+        <label className="text-sm font-medium text-[#F8FAFC]">
+          Referencias cinematográficas
+        </label>
+        <span className="text-xs text-[#475569] font-mono">{selected.length}/{maxSeeds}</span>
+      </div>
+      <p className="text-xs text-[#475569]">Películas que te gustaron — la IA buscará algo similar</p>
 
       <div className="relative">
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscar película... ej: Inception"
-          disabled={selected.length >= maxSeeds}
-          className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-violet-500 disabled:opacity-50"
-        />
-        {loading && (
-          <span className="absolute right-3 top-2.5 text-zinc-500 text-xs">Buscando...</span>
-        )}
+        <div className="relative flex items-center">
+          {loading
+            ? <Loader2 className="absolute left-3 w-4 h-4 text-[#E11D48] animate-spin" strokeWidth={2} />
+            : <Search className="absolute left-3 w-4 h-4 text-[#475569]" strokeWidth={1.5} />
+          }
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={selected.length >= maxSeeds ? "Límite alcanzado" : "Buscar película... ej: Inception"}
+            disabled={selected.length >= maxSeeds}
+            className="w-full bg-[#0A0A1A] border border-white/8 hover:border-white/15 focus:border-[#E11D48]/50 rounded-xl pl-9 pr-4 py-2.5 text-sm transition-colors outline-none placeholder:text-[#475569] disabled:opacity-40 disabled:cursor-not-allowed"
+          />
+        </div>
 
         {open && results.length > 0 && (
-          <ul className="absolute z-10 w-full mt-1 bg-zinc-900 border border-zinc-700 rounded-xl overflow-hidden shadow-xl">
+          <ul className="absolute z-20 w-full mt-1.5 bg-[#0F0F23] border border-white/8 rounded-xl overflow-hidden shadow-2xl">
             {results.map((r) => (
               <li
                 key={r.id}
                 onClick={() => addSeed(r.title)}
-                className="flex items-center gap-3 px-4 py-2.5 hover:bg-zinc-800 cursor-pointer text-sm"
+                className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#1A1A35] cursor-pointer text-sm transition-colors"
               >
-                {r.posterUrl && (
-                  <img src={r.posterUrl} alt={r.title} className="w-8 h-12 object-cover rounded" />
+                {r.posterUrl ? (
+                  <img src={r.posterUrl} alt={r.title} className="w-8 h-12 object-cover rounded-md flex-shrink-0" />
+                ) : (
+                  <div className="w-8 h-12 rounded-md bg-white/5 flex-shrink-0" />
                 )}
-                <span>
-                  {r.title}
-                  {r.year && <span className="text-zinc-500 ml-1">({r.year})</span>}
-                </span>
+                <div>
+                  <p className="font-medium text-[#F8FAFC]">{r.title}</p>
+                  {r.year && <p className="text-[#475569] text-xs font-mono">{r.year}</p>}
+                </div>
               </li>
             ))}
           </ul>
@@ -92,14 +102,15 @@ export default function MovieSearch({ selected, onChange, maxSeeds = 5 }: Props)
           {selected.map((title) => (
             <span
               key={title}
-              className="flex items-center gap-1.5 bg-violet-900/50 border border-violet-700 rounded-full px-3 py-1 text-sm text-violet-200"
+              className="flex items-center gap-1.5 bg-[#E11D48]/10 border border-[#E11D48]/30 rounded-lg px-3 py-1.5 text-xs text-[#F8FAFC] font-medium"
             >
               {title}
               <button
                 onClick={() => removeSeed(title)}
-                className="text-violet-400 hover:text-white leading-none"
+                className="text-[#E11D48]/60 hover:text-[#E11D48] transition-colors cursor-pointer leading-none"
+                aria-label={`Quitar ${title}`}
               >
-                ×
+                <X className="w-3 h-3" />
               </button>
             </span>
           ))}

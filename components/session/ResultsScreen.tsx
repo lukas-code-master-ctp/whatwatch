@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { RefreshCw, Loader2, Sparkles } from "lucide-react"
 import { Movie } from "@/lib/types"
 import MovieCard from "@/components/ui/MovieCard"
 
@@ -28,25 +29,45 @@ export default function ResultsScreen({ initialMovies, sessionId }: Props) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">🎯 {movies.length} películas para esta noche</h1>
-        <p className="text-zinc-400 text-sm mt-1">Basadas en tus preferencias y disponibles en tus plataformas</p>
-      </div>
+    <div className="min-h-screen cinema-grid">
+      {/* Top gradient */}
+      <div
+        className="fixed inset-x-0 top-0 h-32 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, rgba(225,29,72,0.06), transparent)" }}
+      />
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {movies.map((movie) => (
-          <MovieCard key={movie.title} movie={movie} />
-        ))}
-      </div>
+      <div className="max-w-2xl mx-auto px-4 py-10 relative z-10">
+        {/* Header */}
+        <div className="mb-7 space-y-1">
+          <div className="flex items-center gap-2 text-[#E11D48] text-xs font-mono tracking-widest uppercase">
+            <Sparkles className="w-3.5 h-3.5" />
+            Selección IA
+          </div>
+          <h1 className="text-2xl font-bold text-[#F8FAFC]">
+            {movies.length} películas para esta noche
+          </h1>
+          <p className="text-[#475569] text-sm">Personalizadas según tus preferencias y plataformas</p>
+        </div>
 
-      <button
-        onClick={loadMore}
-        disabled={loading}
-        className="mt-8 w-full bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 border border-zinc-700 text-zinc-300 py-3 rounded-xl text-sm font-medium transition-colors"
-      >
-        {loading ? "Buscando más..." : "🔄 Buscar más opciones"}
-      </button>
+        {/* Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {movies.map((movie) => (
+            <MovieCard key={movie.title} movie={movie} />
+          ))}
+        </div>
+
+        {/* Load more */}
+        <button
+          onClick={loadMore}
+          disabled={loading}
+          className="mt-8 w-full flex items-center justify-center gap-2 bg-[#0A0A1A] hover:bg-[#0F0F23] disabled:opacity-40 disabled:cursor-not-allowed border border-white/8 hover:border-white/15 text-[#94A3B8] hover:text-[#F8FAFC] py-3.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer"
+        >
+          {loading
+            ? <><Loader2 className="w-4 h-4 animate-spin" /> Buscando más...</>
+            : <><RefreshCw className="w-4 h-4" /> Buscar más opciones</>
+          }
+        </button>
+      </div>
     </div>
   )
 }

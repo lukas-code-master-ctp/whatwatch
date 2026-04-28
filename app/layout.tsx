@@ -1,8 +1,18 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Exo, Roboto_Mono } from "next/font/google"
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"] })
+const exo = Exo({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-exo",
+})
+
+const robotoMono = Roboto_Mono({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  variable: "--font-roboto-mono",
+})
 
 export const metadata: Metadata = {
   title: "WhatWatch — ¿Qué vemos hoy?",
@@ -11,8 +21,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className="dark">
-      <body className={`${inter.className} bg-zinc-950 text-zinc-100 min-h-screen`}>
+    <html lang="es">
+      <body className={`${exo.variable} ${robotoMono.variable} bg-black text-[#F8FAFC] min-h-screen`}>
         {children}
       </body>
     </html>
