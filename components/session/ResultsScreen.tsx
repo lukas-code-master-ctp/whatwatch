@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { RefreshCw, Loader2, Sparkles, Info } from "lucide-react"
-import { Movie } from "@/lib/types"
+import { Movie, UserPrefs } from "@/lib/types"
 import MovieCard from "@/components/ui/MovieCard"
 
 interface Props {
@@ -10,24 +10,32 @@ interface Props {
   sessionId: string
   userSeeds: string[][]
   mode: "couple" | "solo"
+  allPrefs: UserPrefs[]
 }
 
-export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mode }: Props) {
+export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mode, allPrefs }: Props) {
   const [movies, setMovies] = useState<Movie[]>(initialMovies)
   const [shown, setShown] = useState<string[]>(initialMovies.map((m) => m.title))
   const [loading, setLoading] = useState(false)
 
   async function loadMore() {
     setLoading(true)
-    const exclude = shown.join(",")
-    const res = await fetch(`/api/session/${sessionId}/match?exclude=${encodeURIComponent(exclude)}`)
-    const data = await res.json()
-    if (data.results) {
-      const newMovies: Movie[] = data.results
-      setMovies(newMovies)
-      setShown((prev) => [...prev, ...newMovies.map((m) => m.title)])
+    try {
+      const res = await fetch(`/api/session/${sessionId}/match`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ users: allPrefs, mode, exclude: shown }),
+      })
+      if (!res.ok) throw new Error(`${res.status}`)
+      const data = await res.json()
+      if (data.results) {
+        const newMovies: Movie[] = data.results
+        setMovies(newMovies)
+        setShown((prev) => [...prev, ...newMovies.map((m) => m.title)])
+      }
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (

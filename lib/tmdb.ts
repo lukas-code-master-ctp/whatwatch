@@ -12,6 +12,7 @@ const GENRE_MAP: Record<number, string> = {
 export interface TMDBSearchResult {
   id: number
   title: string
+  original_title: string
   release_date: string
   poster_path: string | null
   vote_average: number
@@ -30,9 +31,9 @@ export function genreName(ids: number[]): string | null {
   return null
 }
 
-export async function searchMovies(query: string): Promise<TMDBSearchResult[]> {
+export async function searchMovies(query: string, language = "es-MX"): Promise<TMDBSearchResult[]> {
   try {
-    const params = new URLSearchParams({ api_key: process.env.TMDB_API_KEY!, query })
+    const params = new URLSearchParams({ api_key: process.env.TMDB_API_KEY!, query, language })
     const res = await fetch(`${BASE}/search/movie?${params}`)
     if (!res.ok) return []
     const data = await res.json()
@@ -54,13 +55,37 @@ async function getMovieRuntime(id: number): Promise<number | null> {
   }
 }
 
+function bestTmdbMatch(results: TMDBSearchResult[], aiTitle: string): TMDBSearchResult | null {
+  if (results.length === 0) return null
+  const q = aiTitle.toLowerCase()
+  // Exact match on localized title or original title
+  const exact = results.find(
+    r => r.title.toLowerCase() === q || r.original_title.toLowerCase() === q
+  )
+  if (exact) return exact
+  // Partial: AI title starts with TMDB title (handles "Foo: The Movie" vs "Foo")
+  const partial = results.find(
+    r => q.startsWith(r.title.toLowerCase()) || q.startsWith(r.original_title.toLowerCase())
+  )
+  return partial ?? results[0]
+}
+
 export async function enrichMovies(aiMovies: AIMovie[]): Promise<Movie[]> {
   const settled = await Promise.allSettled(
     aiMovies.map(async (ai): Promise<Movie> => {
-      const results = await searchMovies(ai.title)
-      const tmdb = results.find(r => r.title.toLowerCase() === ai.title.toLowerCase())
-        ?? results[0]
-        ?? null
+      // Search in Spanish first (matches AI-returned Spanish titles)
+      let results = await searchMovies(ai.title, "es-MX")
+      let tmdb = bestTmdbMatch(results, ai.title)
+
+      // If no poster from Spanish search, retry in English (broader index)
+      if (!tmdb?.poster_path) {
+        const enResults = await searchMovies(ai.title, "en-US")
+        const enMatch = bestTmdbMatch(enResults, ai.title)
+        if (enMatch?.poster_path) {
+          tmdb = enMatch
+          results = enResults
+        }
+      }
 
       const runtime = tmdb ? await getMovieRuntime(tmdb.id) : null
 

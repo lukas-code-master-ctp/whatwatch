@@ -18,6 +18,7 @@ function SessionContent() {
   const [submitError, setSubmitError] = useState("")
   const [movies, setMovies] = useState<Movie[]>([])
   const [userSeeds, setUserSeeds] = useState<string[][]>([])
+  const [allPrefs, setAllPrefs] = useState<UserPrefs[]>([])
   const [sessionMode, setSessionMode] = useState<"couple" | "solo">("solo")
   const [sessionUrl, setSessionUrl] = useState("")
   const [matchError, setMatchError] = useState("")
@@ -68,6 +69,7 @@ function SessionContent() {
   useEffect(() => () => stopPolling(), [])
 
   async function handlePrefsSubmit(prefs: UserPrefs) {
+    setAllPrefs((prev) => [...prev, prefs])
     setSubmitting(true)
     setSubmitError("")
 
@@ -123,7 +125,7 @@ function SessionContent() {
   if (screen === "waiting") {
     return <WaitingScreen sessionUrl={sessionUrl} mode={sessionMode} error={matchError} />
   }
-  return <ResultsScreen initialMovies={movies} sessionId={id} userSeeds={userSeeds} mode={sessionMode} />
+  return <ResultsScreen initialMovies={movies} sessionId={id} userSeeds={userSeeds} mode={sessionMode} allPrefs={allPrefs} />
 }
 
 export default function SessionPage() {

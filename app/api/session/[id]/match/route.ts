@@ -3,7 +3,7 @@ import { getSession, setResults } from "@/lib/sessions"
 import { buildCouplePrompt, buildSoloPrompt } from "@/lib/prompts"
 import { getRecommendations } from "@/lib/openrouter"
 import { enrichMovies } from "@/lib/tmdb"
-import { MatchResponse } from "@/lib/types"
+import { MatchResponse, UserPrefs, SessionMode } from "@/lib/types"
 
 export async function GET(
   req: NextRequest,
@@ -51,6 +51,33 @@ export async function GET(
       setResults(id, movies)
     }
     return NextResponse.json({ ...base, status: "ready", results: movies, userSeeds })
+  } catch {
+    return NextResponse.json({ error: "AI service unavailable" }, { status: 502 })
+  }
+}
+
+// Stateless load-more: client sends prefs so no server session is needed
+export async function POST(
+  req: NextRequest,
+  { params: _params }: { params: Promise<{ id: string }> }
+) {
+  const body = await req.json()
+  const { users, mode, exclude = [] }: { users: UserPrefs[]; mode: SessionMode; exclude: string[] } = body
+
+  if (!users?.length) {
+    return NextResponse.json({ error: "No prefs provided" }, { status: 400 })
+  }
+
+  const prompt =
+    mode === "couple" && users.length >= 2
+      ? buildCouplePrompt(users[0], users[1], exclude)
+      : buildSoloPrompt(users[0], exclude)
+
+  try {
+    const aiMovies = await getRecommendations(prompt)
+    const movies = await enrichMovies(aiMovies)
+    const userSeeds = users.map((u) => u.seeds)
+    return NextResponse.json({ status: "ready", mode, results: movies, userSeeds })
   } catch {
     return NextResponse.json({ error: "AI service unavailable" }, { status: 502 })
   }
