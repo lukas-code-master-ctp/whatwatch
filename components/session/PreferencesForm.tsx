@@ -10,9 +10,10 @@ import { Platform, UserPrefs } from "@/lib/types"
 interface Props {
   onSubmit: (prefs: UserPrefs) => Promise<void>
   submitting: boolean
+  error?: string
 }
 
-export default function PreferencesForm({ onSubmit, submitting }: Props) {
+export default function PreferencesForm({ onSubmit, submitting, error }: Props) {
   const [seeds, setSeeds] = useState<string[]>([])
   const [platforms, setPlatforms] = useState<Platform[]>(["netflix", "disney", "prime", "hbo", "apple"])
   const [yearFrom, setYearFrom] = useState<number | null>(null)
@@ -65,6 +66,11 @@ export default function PreferencesForm({ onSubmit, submitting }: Props) {
         </div>
 
         {/* Submit */}
+        {error && (
+          <p className="text-[#E11D48] text-sm text-center bg-[#E11D48]/8 border border-[#E11D48]/20 rounded-xl px-4 py-3">
+            {error}
+          </p>
+        )}
         <button
           onClick={handleSubmit}
           disabled={!canSubmit}

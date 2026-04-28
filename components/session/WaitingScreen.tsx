@@ -7,9 +7,10 @@ import { SessionMode } from "@/lib/types"
 interface Props {
   sessionUrl: string
   mode: SessionMode
+  error?: string
 }
 
-export default function WaitingScreen({ sessionUrl, mode }: Props) {
+export default function WaitingScreen({ sessionUrl, mode, error }: Props) {
   const [copied, setCopied] = useState(false)
 
   async function copy() {
@@ -68,8 +69,14 @@ export default function WaitingScreen({ sessionUrl, mode }: Props) {
         </div>
       )}
 
+      {error && (
+        <p className="text-[#E11D48] text-sm text-center max-w-sm bg-[#E11D48]/8 border border-[#E11D48]/20 rounded-xl px-4 py-3">
+          {error}
+        </p>
+      )}
+
       {/* Pulse dots */}
-      <div className="flex gap-2 items-center">
+      <div className={`flex gap-2 items-center ${error ? "opacity-0" : ""}`}>
         {[0, 1, 2].map((i) => (
           <div
             key={i}
