@@ -1,6 +1,6 @@
 "use client"
 
-import { Tv } from "lucide-react"
+import { Tv, ToggleLeft, ToggleRight } from "lucide-react"
 import { Platform } from "@/lib/types"
 
 const PLATFORMS: { id: Platform; label: string; dot: string }[] = [
@@ -11,12 +11,16 @@ const PLATFORMS: { id: Platform; label: string; dot: string }[] = [
   { id: "apple",    label: "Apple TV+",    dot: "bg-white" },
 ]
 
+const ALL_IDS = PLATFORMS.map((p) => p.id)
+
 interface Props {
   selected: Platform[]
   onChange: (platforms: Platform[]) => void
 }
 
 export default function PlatformSelector({ selected, onChange }: Props) {
+  const allSelected = ALL_IDS.every((id) => selected.includes(id))
+
   function toggle(id: Platform) {
     if (selected.includes(id)) {
       onChange(selected.filter((p) => p !== id))
@@ -25,11 +29,27 @@ export default function PlatformSelector({ selected, onChange }: Props) {
     }
   }
 
+  function toggleAll() {
+    onChange(allSelected ? [] : [...ALL_IDS])
+  }
+
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2">
-        <Tv className="w-4 h-4 text-[#475569]" strokeWidth={1.5} />
-        <label className="text-sm font-medium text-[#F8FAFC]">Plataformas disponibles</label>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Tv className="w-4 h-4 text-[#475569]" strokeWidth={1.5} />
+          <label className="text-sm font-medium text-[#F8FAFC]">Plataformas disponibles</label>
+        </div>
+        <button
+          onClick={toggleAll}
+          className="flex items-center gap-1.5 text-xs text-[#475569] hover:text-[#94A3B8] transition-colors cursor-pointer"
+        >
+          {allSelected
+            ? <ToggleRight className="w-4 h-4 text-[#E11D48]" />
+            : <ToggleLeft className="w-4 h-4" />
+          }
+          {allSelected ? "Quitar todas" : "Agregar todas"}
+        </button>
       </div>
       <div className="flex flex-wrap gap-2">
         {PLATFORMS.map(({ id, label, dot }) => {
@@ -50,6 +70,9 @@ export default function PlatformSelector({ selected, onChange }: Props) {
           )
         })}
       </div>
+      {selected.length === 0 && (
+        <p className="text-xs text-[#E11D48]/70">Selecciona al menos una plataforma</p>
+      )}
     </div>
   )
 }

@@ -8,7 +8,8 @@ export interface Filters {
 }
 
 export interface UserPrefs {
-  seeds: string[]               // movie titles, 1–5
+  seeds: string[]               // movie titles, 0–5
+  prompt?: string               // optional freeform refinement
   platforms: Platform[]
   filters: Filters
 }

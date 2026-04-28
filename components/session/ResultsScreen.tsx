@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { RefreshCw, Loader2, Sparkles } from "lucide-react"
+import { RefreshCw, Loader2, Sparkles, Info } from "lucide-react"
 import { Movie } from "@/lib/types"
 import MovieCard from "@/components/ui/MovieCard"
 
@@ -76,6 +76,14 @@ export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mod
               )}
             </div>
           )}
+        </div>
+
+        {/* Score legend */}
+        <div className="flex items-start gap-2 mb-5 px-3 py-2.5 rounded-xl bg-white/3 border border-white/6">
+          <Info className="w-3.5 h-3.5 text-[#475569] mt-0.5 shrink-0" />
+          <p className="text-xs text-[#475569] leading-relaxed">
+            El <span className="text-[#E11D48] font-mono font-medium">%</span> es el puntaje de afinidad que la IA asigna a cada película según qué tan bien encaja con tus preferencias. A mayor porcentaje, mayor compatibilidad con lo que buscas.
+          </p>
         </div>
 
         {/* Grid */}

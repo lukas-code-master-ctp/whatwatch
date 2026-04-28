@@ -11,7 +11,7 @@ interface Props {
 }
 
 const MIN = 1950
-const MAX = 2025
+const MAX = new Date().getFullYear()
 
 export default function YearSlider({ yearFrom, yearTo, onChange }: Props) {
   const [enabled, setEnabled] = useState(yearFrom !== null)
@@ -53,28 +53,37 @@ export default function YearSlider({ yearFrom, yearTo, onChange }: Props) {
       </div>
 
       {enabled && (
-        <div className="space-y-3 px-1">
+        <div className="space-y-4 px-1">
+          {/* Year labels above thumbs */}
+          <div className="flex justify-between text-sm font-mono text-[#F8FAFC]">
+            <span className="bg-[#1A1A35] border border-[#E11D48]/30 px-2 py-0.5 rounded-md">{values[0]}</span>
+            <span className="bg-[#1A1A35] border border-[#E11D48]/30 px-2 py-0.5 rounded-md">{values[1]}</span>
+          </div>
+
           <SliderPrimitive.Root
             min={MIN}
             max={MAX}
             step={1}
             value={values}
             onValueChange={handleChange}
-            className="relative flex items-center w-full h-5"
+            className="relative flex items-center w-full select-none touch-none"
+            style={{ height: 44 }}
           >
-            <SliderPrimitive.Track className="relative h-px w-full bg-white/10 flex-1">
-              <SliderPrimitive.Range className="absolute h-full bg-[#E11D48]" />
+            <SliderPrimitive.Track className="relative w-full rounded-full bg-white/10 flex-1" style={{ height: 4 }}>
+              <SliderPrimitive.Range className="absolute h-full rounded-full bg-[#E11D48]" />
             </SliderPrimitive.Track>
             {values.map((_, i) => (
               <SliderPrimitive.Thumb
                 key={i}
-                className="block h-4 w-4 rounded-full bg-white border border-[#E11D48]/50 shadow-lg focus:outline-none focus:ring-2 focus:ring-[#E11D48] cursor-pointer transition-transform hover:scale-110"
+                className="block rounded-full bg-white border-2 border-[#E11D48] shadow-lg focus:outline-none focus:ring-2 focus:ring-[#E11D48] cursor-pointer transition-transform hover:scale-110 active:scale-125"
+                style={{ width: 28, height: 28 }}
               />
             ))}
           </SliderPrimitive.Root>
+
           <div className="flex justify-between text-xs text-[#475569] font-mono">
-            <span>{values[0]}</span>
-            <span>{values[1]}</span>
+            <span>{MIN}</span>
+            <span>{MAX}</span>
           </div>
         </div>
       )}
