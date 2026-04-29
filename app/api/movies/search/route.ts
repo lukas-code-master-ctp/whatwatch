@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
-import { searchMovies, posterUrl } from "@/lib/tmdb"
+import { searchMovies, searchTV, posterUrl } from "@/lib/tmdb"
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q") ?? ""
+  const type = req.nextUrl.searchParams.get("type") === "series" ? "series" : "movie"
   if (q.length < 2) return NextResponse.json([])
 
-  const results = await searchMovies(q)
+  const results = type === "series" ? await searchTV(q) : await searchMovies(q)
   const mapped = results.slice(0, 8).map((r) => ({
     id: r.id,
     title: r.title,

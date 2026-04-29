@@ -13,10 +13,11 @@ interface SearchResult {
 interface Props {
   selected: string[]
   onChange: (seeds: string[]) => void
+  contentType?: "movie" | "series"
   maxSeeds?: number
 }
 
-export default function MovieSearch({ selected, onChange, maxSeeds = 5 }: Props) {
+export default function MovieSearch({ selected, onChange, contentType = "movie", maxSeeds = 5 }: Props) {
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<SearchResult[]>([])
   const [loading, setLoading] = useState(false)
@@ -29,7 +30,7 @@ export default function MovieSearch({ selected, onChange, maxSeeds = 5 }: Props)
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(async () => {
       setLoading(true)
-      const res = await fetch(`/api/movies/search?q=${encodeURIComponent(query)}`)
+      const res = await fetch(`/api/movies/search?q=${encodeURIComponent(query)}&type=${contentType}`)
       const data = await res.json()
       setResults(data)
       setOpen(true)
@@ -53,11 +54,15 @@ export default function MovieSearch({ selected, onChange, maxSeeds = 5 }: Props)
     <div className="space-y-3">
       <div className="flex items-baseline justify-between">
         <label className="text-sm font-medium text-[#F8FAFC]">
-          Referencias cinematográficas
+          {contentType === "series" ? "Series de referencia" : "Referencias cinematográficas"}
         </label>
         <span className="text-xs text-[#475569] font-mono">{selected.length}/{maxSeeds}</span>
       </div>
-      <p className="text-xs text-[#475569]">Películas que te gustaron — la IA buscará algo similar</p>
+      <p className="text-xs text-[#475569]">
+        {contentType === "series"
+          ? "Series que te gustaron — la IA buscará algo similar"
+          : "Películas que te gustaron — la IA buscará algo similar"}
+      </p>
 
       <div className="relative">
         <div className="relative flex items-center">
@@ -68,7 +73,13 @@ export default function MovieSearch({ selected, onChange, maxSeeds = 5 }: Props)
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={selected.length >= maxSeeds ? "Límite alcanzado" : "Buscar película... ej: Inception"}
+            placeholder={
+              selected.length >= maxSeeds
+                ? "Límite alcanzado"
+                : contentType === "series"
+                  ? "Buscar serie... ej: Breaking Bad"
+                  : "Buscar película... ej: Inception"
+            }
             disabled={selected.length >= maxSeeds}
             className="w-full bg-[#0A0A1A] border border-white/8 hover:border-white/15 focus:border-[#E11D48]/50 rounded-xl pl-9 pr-4 py-2.5 text-sm transition-colors outline-none placeholder:text-[#475569] disabled:opacity-40 disabled:cursor-not-allowed"
           />

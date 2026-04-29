@@ -14,6 +14,7 @@ interface Props {
 }
 
 export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mode, allPrefs }: Props) {
+  const isSeries = allPrefs[0]?.contentType === "series"
   const [movies, setMovies] = useState<Movie[]>(initialMovies)
   const [shown, setShown] = useState<string[]>(initialMovies.map((m) => m.title))
   const [loading, setLoading] = useState(false)
@@ -54,7 +55,7 @@ export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mod
             Selección IA
           </div>
           <h1 className="text-2xl font-bold text-[#F8FAFC]">
-            {movies.length} películas para esta noche
+            {movies.length} {isSeries ? "series" : "películas"} para esta noche
           </h1>
 
           {/* Seeds attribution */}
@@ -90,7 +91,7 @@ export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mod
         <div className="flex items-start gap-2 mb-5 px-3 py-2.5 rounded-xl bg-white/3 border border-white/6">
           <Info className="w-3.5 h-3.5 text-[#475569] mt-0.5 shrink-0" />
           <p className="text-xs text-[#475569] leading-relaxed">
-            El <span className="text-[#E11D48] font-mono font-medium">%</span> es el puntaje de afinidad que la IA asigna a cada película según qué tan bien encaja con tus preferencias. A mayor porcentaje, mayor compatibilidad con lo que buscas.
+            El <span className="text-[#E11D48] font-mono font-medium">%</span> es el puntaje de afinidad que la IA asigna a cada {isSeries ? "serie" : "película"} según qué tan bien encaja con tus preferencias. A mayor porcentaje, mayor compatibilidad con lo que buscas.
           </p>
         </div>
 

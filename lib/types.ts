@@ -1,4 +1,5 @@
 export type Platform = "netflix" | "disney" | "prime" | "hbo" | "apple"
+export type ContentType = "movie" | "series"
 
 export interface Filters {
   yearFrom: number | null
@@ -8,7 +9,8 @@ export interface Filters {
 }
 
 export interface UserPrefs {
-  seeds: string[]               // movie titles, 0–5
+  contentType: ContentType      // movie or series
+  seeds: string[]               // title references, 0–5
   prompt?: string               // optional freeform refinement
   platforms: Platform[]
   filters: Filters

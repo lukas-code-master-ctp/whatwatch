@@ -44,9 +44,11 @@ export async function GET(
       ? buildCouplePrompt(session.users[0], session.users[1], exclude)
       : buildSoloPrompt(session.users[0], exclude)
 
+  const contentType = session.users[0]?.contentType ?? "movie"
+
   try {
     const aiMovies = await getRecommendations(prompt)
-    const movies = await enrichMovies(aiMovies)
+    const movies = await enrichMovies(aiMovies, contentType)
     if (exclude.length === 0) {
       setResults(id, movies)
     }
@@ -68,6 +70,7 @@ export async function POST(
     return NextResponse.json({ error: "No prefs provided" }, { status: 400 })
   }
 
+  const contentType = users[0]?.contentType ?? "movie"
   const prompt =
     mode === "couple" && users.length >= 2
       ? buildCouplePrompt(users[0], users[1], exclude)
@@ -75,7 +78,7 @@ export async function POST(
 
   try {
     const aiMovies = await getRecommendations(prompt)
-    const movies = await enrichMovies(aiMovies)
+    const movies = await enrichMovies(aiMovies, contentType)
     const userSeeds = users.map((u) => u.seeds)
     return NextResponse.json({ status: "ready", mode, results: movies, userSeeds })
   } catch {
