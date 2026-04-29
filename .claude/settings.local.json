@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash \"C:/Users/lukas/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.6/skills/brainstorming/scripts/start-server.sh\" --project-dir \"C:/Users/lukas/Desktop/Claude_Code/Movies\")",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --yes)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --yes --name whatwatch)",
+      "Read(//c/Users/lukas/Desktop/Claude_Code/**)",
+      "Bash(npx create-next-app@latest whatwatch --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --yes)"
+    ]
+  }
+}

@@ -17,6 +17,7 @@ describe("GET /api/movies/search", () => {
       {
         id: 1,
         title: "Inception",
+        original_title: "Inception",
         release_date: "2010-07-16",
         poster_path: "/img.jpg",
         vote_average: 8.4,

@@ -8,6 +8,7 @@ import {
 import { UserPrefs, Movie } from "@/lib/types"
 
 const samplePrefs: UserPrefs = {
+  contentType: "movie",
   seeds: ["Inception"],
   platforms: ["netflix"],
   filters: { yearFrom: null, yearTo: null, genres: null, duration: null },

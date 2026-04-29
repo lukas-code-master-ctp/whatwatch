@@ -47,7 +47,7 @@ export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mod
         style={{ background: "linear-gradient(to bottom, rgba(225,29,72,0.06), transparent)" }}
       />
 
-      <div className="max-w-2xl mx-auto px-4 py-10 relative z-10">
+      <div className="max-w-5xl mx-auto px-4 md:px-10 py-10 relative z-10">
         {/* Header */}
         <div className="mb-7 space-y-2">
           <div className="flex items-center gap-2 text-[#E11D48] text-xs font-mono tracking-widest uppercase">
@@ -96,7 +96,7 @@ export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mod
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {movies.map((movie) => (
             <MovieCard key={movie.title} movie={movie} />
           ))}

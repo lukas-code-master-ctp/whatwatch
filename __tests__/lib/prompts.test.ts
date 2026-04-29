@@ -2,12 +2,14 @@ import { buildCouplePrompt, buildSoloPrompt } from "@/lib/prompts"
 import { UserPrefs } from "@/lib/types"
 
 const prefs1: UserPrefs = {
+  contentType: "movie",
   seeds: ["Avengers", "Iron Man"],
   platforms: ["netflix", "disney"],
   filters: { yearFrom: null, yearTo: null, genres: null, duration: null },
 }
 
 const prefs2: UserPrefs = {
+  contentType: "movie",
   seeds: ["Cenicienta", "Encanto"],
   platforms: ["netflix", "disney"],
   filters: { yearFrom: 2010, yearTo: 2020, genres: null, duration: null },

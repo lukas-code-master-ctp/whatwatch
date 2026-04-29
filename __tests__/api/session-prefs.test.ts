@@ -10,6 +10,7 @@ import { UserPrefs } from "@/lib/types"
 jest.mock("@/lib/sessions")
 
 const prefs: UserPrefs = {
+  contentType: "movie",
   seeds: ["Inception"],
   platforms: ["netflix"],
   filters: { yearFrom: null, yearTo: null, genres: null, duration: null },
@@ -34,7 +35,7 @@ describe("POST /api/session/[id]/prefs", () => {
       headers: { "content-type": "application/json" },
     })
 
-    const res = await POST(req, { params: { id: "abc" } })
+    const res = await POST(req, { params: Promise.resolve({ id: "abc" }) })
     const data = await res.json()
 
     expect(res.status).toBe(200)
@@ -51,7 +52,7 @@ describe("POST /api/session/[id]/prefs", () => {
       headers: { "content-type": "application/json" },
     })
 
-    const res = await POST(req, { params: { id: "bad" } })
+    const res = await POST(req, { params: Promise.resolve({ id: "bad" }) })
     expect(res.status).toBe(404)
   })
 })

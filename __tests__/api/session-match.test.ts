@@ -15,6 +15,7 @@ jest.mock("@/lib/openrouter")
 jest.mock("@/lib/tmdb")
 
 const prefs: UserPrefs = {
+  contentType: "movie",
   seeds: ["Inception"],
   platforms: ["netflix"],
   filters: { yearFrom: null, yearTo: null, genres: null, duration: null },
@@ -58,14 +59,14 @@ describe("GET /api/session/[id]/match", () => {
   test("returns 404 for unknown session", async () => {
     jest.mocked(sessions.getSession).mockReturnValue(null)
     const req = new NextRequest("http://localhost/api/session/bad/match")
-    const res = await GET(req, { params: { id: "bad" } })
+    const res = await GET(req, { params: Promise.resolve({ id: "bad" }) })
     expect(res.status).toBe(404)
   })
 
   test("returns waiting status when not all users submitted", async () => {
     jest.mocked(sessions.getSession).mockReturnValue(makeSession({ mode: "couple", users: [prefs] }))
     const req = new NextRequest("http://localhost/api/session/abc/match")
-    const res = await GET(req, { params: { id: "abc" } })
+    const res = await GET(req, { params: Promise.resolve({ id: "abc" }) })
     const data = await res.json()
     expect(data.status).toBe("waiting")
     expect(data.submitted).toBe(1)
@@ -77,7 +78,7 @@ describe("GET /api/session/[id]/match", () => {
       makeSession({ results: [movie] })
     )
     const req = new NextRequest("http://localhost/api/session/abc/match")
-    const res = await GET(req, { params: { id: "abc" } })
+    const res = await GET(req, { params: Promise.resolve({ id: "abc" }) })
     const data = await res.json()
     expect(data.status).toBe("ready")
     expect(data.results).toHaveLength(1)
@@ -89,7 +90,7 @@ describe("GET /api/session/[id]/match", () => {
       makeSession({ mode: "couple", users: [prefs, prefs] })
     )
     const req = new NextRequest("http://localhost/api/session/abc/match")
-    const res = await GET(req, { params: { id: "abc" } })
+    const res = await GET(req, { params: Promise.resolve({ id: "abc" }) })
     const data = await res.json()
     expect(data.status).toBe("ready")
     expect(openrouter.getRecommendations).toHaveBeenCalledWith("couple prompt")
@@ -101,7 +102,7 @@ describe("GET /api/session/[id]/match", () => {
       makeSession({ mode: "solo", users: [prefs] })
     )
     const req = new NextRequest("http://localhost/api/session/abc/match?exclude=Shrek")
-    const res = await GET(req, { params: { id: "abc" } })
+    const res = await GET(req, { params: Promise.resolve({ id: "abc" }) })
     const data = await res.json()
     expect(data.status).toBe("ready")
     expect(sessions.setResults).not.toHaveBeenCalled()
@@ -113,7 +114,7 @@ describe("GET /api/session/[id]/match", () => {
     )
     jest.mocked(openrouter.getRecommendations).mockRejectedValue(new Error("quota exceeded"))
     const req = new NextRequest("http://localhost/api/session/abc/match")
-    const res = await GET(req, { params: { id: "abc" } })
+    const res = await GET(req, { params: Promise.resolve({ id: "abc" }) })
     expect(res.status).toBe(502)
   })
 })
