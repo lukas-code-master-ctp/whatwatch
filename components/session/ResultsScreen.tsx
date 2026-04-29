@@ -50,11 +50,11 @@ export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mod
       <div className="max-w-5xl mx-auto px-4 md:px-10 py-10 relative z-10">
         {/* Header */}
         <div className="mb-7 space-y-2">
-          <div className="flex items-center gap-2 text-[#E11D48] text-xs font-mono tracking-widest uppercase">
+          <div className="flex items-center gap-2 text-[#E11D48] text-xs md:text-sm font-mono tracking-widest uppercase">
             <Sparkles className="w-3.5 h-3.5" />
             Selección IA
           </div>
-          <h1 className="text-2xl font-bold text-[#F8FAFC]">
+          <h1 className="text-2xl md:text-4xl font-bold text-[#F8FAFC]">
             {movies.length} {isSeries ? "series" : "películas"} para esta noche
           </h1>
 
@@ -62,7 +62,7 @@ export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mod
           {userSeeds.length > 0 && (
             <div className="space-y-1 pt-1">
               {mode === "solo" && userSeeds[0]?.length > 0 && (
-                <p className="text-sm text-[#64748B]">
+                <p className="text-sm md:text-base text-[#64748B]">
                   Basado en:{" "}
                   <span className="text-[#94A3B8]">{userSeeds[0].join(", ")}</span>
                 </p>
@@ -90,7 +90,7 @@ export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mod
         {/* Score legend */}
         <div className="flex items-start gap-2 mb-5 px-3 py-2.5 rounded-xl bg-white/3 border border-white/6">
           <Info className="w-3.5 h-3.5 text-[#475569] mt-0.5 shrink-0" />
-          <p className="text-xs text-[#475569] leading-relaxed">
+          <p className="text-xs md:text-sm text-[#475569] leading-relaxed">
             El <span className="text-[#E11D48] font-mono font-medium">%</span> es el puntaje de afinidad que la IA asigna a cada {isSeries ? "serie" : "película"} según qué tan bien encaja con tus preferencias. A mayor porcentaje, mayor compatibilidad con lo que buscas.
           </p>
         </div>
@@ -106,7 +106,7 @@ export default function ResultsScreen({ initialMovies, sessionId, userSeeds, mod
         <button
           onClick={loadMore}
           disabled={loading}
-          className="mt-8 w-full flex items-center justify-center gap-2 bg-[#0A0A1A] hover:bg-[#0F0F23] disabled:opacity-40 disabled:cursor-not-allowed border border-white/8 hover:border-white/15 text-[#94A3B8] hover:text-[#F8FAFC] py-3.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer"
+          className="mt-8 w-full flex items-center justify-center gap-2 bg-[#0A0A1A] hover:bg-[#0F0F23] disabled:opacity-40 disabled:cursor-not-allowed border border-white/8 hover:border-white/15 text-[#94A3B8] hover:text-[#F8FAFC] py-3.5 md:py-4 rounded-xl text-sm md:text-base font-medium transition-all duration-200 cursor-pointer"
         >
           {loading
             ? <><Loader2 className="w-4 h-4 animate-spin" /> Buscando más...</>

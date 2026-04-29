@@ -53,12 +53,12 @@ export default function MovieSearch({ selected, onChange, contentType = "movie",
   return (
     <div className="space-y-3">
       <div className="flex items-baseline justify-between">
-        <label className="text-sm font-medium text-[#F8FAFC]">
+        <label className="text-sm md:text-base font-medium text-[#F8FAFC]">
           {contentType === "series" ? "Series de referencia" : "Referencias cinematográficas"}
         </label>
-        <span className="text-xs text-[#475569] font-mono">{selected.length}/{maxSeeds}</span>
+        <span className="text-xs md:text-sm text-[#475569] font-mono">{selected.length}/{maxSeeds}</span>
       </div>
-      <p className="text-xs text-[#475569]">
+      <p className="text-xs md:text-sm text-[#475569]">
         {contentType === "series"
           ? "Series que te gustaron — la IA buscará algo similar"
           : "Películas que te gustaron — la IA buscará algo similar"}
@@ -81,7 +81,7 @@ export default function MovieSearch({ selected, onChange, contentType = "movie",
                   : "Buscar película... ej: Inception"
             }
             disabled={selected.length >= maxSeeds}
-            className="w-full bg-[#0A0A1A] border border-white/8 hover:border-white/15 focus:border-[#E11D48]/50 rounded-xl pl-9 pr-4 py-2.5 text-sm transition-colors outline-none placeholder:text-[#475569] disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full bg-[#0A0A1A] border border-white/8 hover:border-white/15 focus:border-[#E11D48]/50 rounded-xl pl-9 pr-4 py-2.5 md:py-3 text-sm md:text-base transition-colors outline-none placeholder:text-[#475569] disabled:opacity-40 disabled:cursor-not-allowed"
           />
         </div>
 

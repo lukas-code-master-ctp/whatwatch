@@ -35,7 +35,7 @@ export default function MovieCard({ movie }: Props) {
         )}
 
         {/* Match score badge */}
-        <div className="absolute top-2 right-2 flex items-center gap-0.5 bg-black/80 backdrop-blur-sm border border-[#E11D48]/40 text-[#E11D48] text-xs font-bold px-2 py-0.5 rounded-full font-mono">
+        <div className="absolute top-2 right-2 flex items-center gap-0.5 bg-black/80 backdrop-blur-sm border border-[#E11D48]/40 text-[#E11D48] text-xs md:text-sm font-bold px-2 py-0.5 rounded-full font-mono">
           {movie.matchScore}%
         </div>
 
@@ -44,26 +44,26 @@ export default function MovieCard({ movie }: Props) {
       </div>
 
       {/* Info */}
-      <div className="p-3 flex flex-col gap-1.5 flex-1">
-        <h3 className="font-semibold text-sm leading-tight text-[#F8FAFC] line-clamp-2">{movie.title}</h3>
+      <div className="p-3 md:p-4 flex flex-col gap-1.5 flex-1">
+        <h3 className="font-semibold text-sm md:text-base leading-tight text-[#F8FAFC] line-clamp-2">{movie.title}</h3>
 
-        <div className="flex items-center gap-1.5 text-xs text-[#475569] font-mono">
+        <div className="flex items-center gap-1.5 text-xs md:text-sm text-[#475569] font-mono">
           <span>{movie.year}</span>
           {movie.genre && <><span>·</span><span className="truncate">{movie.genre}</span></>}
           {movie.duration && <><span>·</span><span className="shrink-0">{movie.duration}m</span></>}
         </div>
 
         {movie.rating && (
-          <div className="flex items-center gap-1 text-xs text-yellow-400 font-mono">
-            <Star className="w-3 h-3 fill-yellow-400" />
+          <div className="flex items-center gap-1 text-xs md:text-sm text-yellow-400 font-mono">
+            <Star className="w-3 h-3 md:w-3.5 md:h-3.5 fill-yellow-400" />
             {movie.rating.toFixed(1)}
           </div>
         )}
 
-        <div className={`text-xs font-medium ${color}`}>{movie.platform}</div>
+        <div className={`text-xs md:text-sm font-medium ${color}`}>{movie.platform}</div>
 
         {movie.reason && (
-          <p className="text-xs text-[#475569] mt-auto pt-1.5 leading-relaxed line-clamp-3 border-t border-white/4">
+          <p className="text-xs md:text-sm text-[#475569] mt-auto pt-1.5 leading-relaxed line-clamp-3 border-t border-white/4">
             {movie.reason}
           </p>
         )}

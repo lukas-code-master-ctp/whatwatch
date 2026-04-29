@@ -78,9 +78,9 @@ export default function PreferencesForm({ onSubmit, submitting, error }: Props) 
 
         {/* Header */}
         <div className="mb-8">
-          <p className="text-xs text-[#E11D48] font-mono tracking-widest uppercase mb-1">Paso 1 de 1</p>
-          <h1 className="text-3xl font-bold text-[#F8FAFC]">Tus preferencias</h1>
-          <p className="text-[#475569] mt-1">
+          <p className="text-xs md:text-sm text-[#E11D48] font-mono tracking-widest uppercase mb-1">Paso 1 de 1</p>
+          <h1 className="text-3xl md:text-5xl font-bold text-[#F8FAFC]">Tus preferencias</h1>
+          <p className="text-[#475569] mt-1 md:text-lg">
             {isSeries ? "Cuéntanos qué serie te apetece ver esta noche" : "Cuéntanos qué te apetece ver esta noche"}
           </p>
         </div>
@@ -96,12 +96,12 @@ export default function PreferencesForm({ onSubmit, submitting, error }: Props) 
               <div className="border-t border-white/6 pt-4 space-y-2">
                 <div className="flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-[#475569]" strokeWidth={1.5} />
-                  <label className="text-sm font-medium text-[#F8FAFC]">
+                  <label className="text-sm md:text-base font-medium text-[#F8FAFC]">
                     O describe lo que buscas
-                    <span className="ml-2 text-[#475569] text-xs font-normal">(opcional)</span>
+                    <span className="ml-2 text-[#475569] text-xs md:text-sm font-normal">(opcional)</span>
                   </label>
                 </div>
-                <p className="text-xs text-[#475569]">
+                <p className="text-xs md:text-sm text-[#475569]">
                   Un texto libre que refina la búsqueda — se combina con tus referencias
                 </p>
                 <textarea
@@ -113,7 +113,7 @@ export default function PreferencesForm({ onSubmit, submitting, error }: Props) 
                       : 'ej: "algo para reír en familia" o "thriller psicológico con giro final"'
                   }
                   rows={4}
-                  className="w-full bg-[#0F0F23] border border-white/8 hover:border-white/15 focus:border-[#E11D48]/50 rounded-xl px-4 py-3 text-sm transition-colors outline-none placeholder:text-[#2A2A4A] resize-none leading-relaxed"
+                  className="w-full bg-[#0F0F23] border border-white/8 hover:border-white/15 focus:border-[#E11D48]/50 rounded-xl px-4 py-3 text-sm md:text-base transition-colors outline-none placeholder:text-[#2A2A4A] resize-none leading-relaxed"
                 />
               </div>
             </div>
@@ -154,7 +154,7 @@ export default function PreferencesForm({ onSubmit, submitting, error }: Props) 
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className="w-full flex items-center justify-center gap-2 bg-[#E11D48] hover:bg-[#BE1942] disabled:opacity-30 disabled:cursor-not-allowed text-white py-4 rounded-xl font-semibold transition-all duration-200 cursor-pointer glow-red-box hover:scale-[1.01] active:scale-[0.99]"
+            className="w-full flex items-center justify-center gap-2 bg-[#E11D48] hover:bg-[#BE1942] disabled:opacity-30 disabled:cursor-not-allowed text-white py-4 md:py-5 rounded-xl text-base md:text-lg font-semibold transition-all duration-200 cursor-pointer glow-red-box hover:scale-[1.01] active:scale-[0.99]"
           >
             {submitting ? (
               <>

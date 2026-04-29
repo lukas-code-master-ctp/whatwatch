@@ -38,11 +38,11 @@ export default function PlatformSelector({ selected, onChange }: Props) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Tv className="w-4 h-4 text-[#475569]" strokeWidth={1.5} />
-          <label className="text-sm font-medium text-[#F8FAFC]">Plataformas disponibles</label>
+          <label className="text-sm md:text-base font-medium text-[#F8FAFC]">Plataformas disponibles</label>
         </div>
         <button
           onClick={toggleAll}
-          className="flex items-center gap-1.5 text-xs text-[#475569] hover:text-[#94A3B8] transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 text-xs md:text-sm text-[#475569] hover:text-[#94A3B8] transition-colors cursor-pointer"
         >
           {allSelected
             ? <ToggleRight className="w-4 h-4 text-[#E11D48]" />
@@ -58,7 +58,7 @@ export default function PlatformSelector({ selected, onChange }: Props) {
             <button
               key={id}
               onClick={() => toggle(id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer border ${
+              className={`flex items-center gap-2 px-4 py-2 md:py-2.5 rounded-lg text-sm md:text-base font-medium transition-all duration-200 cursor-pointer border ${
                 active
                   ? "bg-[#0F0F23] border-[#E11D48]/50 text-[#F8FAFC]"
                   : "bg-transparent border-white/8 text-[#475569] hover:border-white/15 hover:text-[#94A3B8]"
@@ -71,7 +71,7 @@ export default function PlatformSelector({ selected, onChange }: Props) {
         })}
       </div>
       {selected.length === 0 && (
-        <p className="text-xs text-[#E11D48]/70">Selecciona al menos una plataforma</p>
+        <p className="text-xs md:text-sm text-[#E11D48]/70">Selecciona al menos una plataforma</p>
       )}
     </div>
   )
